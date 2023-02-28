@@ -1,4 +1,4 @@
-import './js/fetchImages';
+// import './js/fetchImages';
 import './js/script';
 
 

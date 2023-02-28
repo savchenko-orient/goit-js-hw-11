@@ -21,7 +21,6 @@ let page = 1;
 
 formEl.addEventListener('submit', async (e) => {
     e.preventDefault();
-    lightbox.destroy();
     gallery.innerHTML = '';
     page = 1;
     searchQuery = e.currentTarget.searchQuery.value.trim();
@@ -30,9 +29,10 @@ formEl.addEventListener('submit', async (e) => {
         noSearchQueryMessage()
         return
     }
+    // lightbox.destroy();
 
     try {
-        fetchImages(searchQuery, page, perPage)
+        await fetchImages(searchQuery, page, perPage)
             .then(({ data }) => {
 
                 if (data.totalHits === 0) {
@@ -42,7 +42,8 @@ formEl.addEventListener('submit', async (e) => {
 
                 howManyImagesFoundMessage(data.totalHits);
                 renderGalery(data.hits);
-                lightbox = new SimpleLightbox('.gallery a');
+                lightbox.refresh();
+                // lightbox = new SimpleLightbox('.gallery a');
 
                 loadMoreBtn.classList.remove('is-hidden')
             })
