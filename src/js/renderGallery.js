@@ -33,7 +33,8 @@ function renderGalery(images) {
                     </div>
                 </div>
                 </a>`
-    }).join('');
+    })
+        .join('');
 
     gallery.insertAdjacentHTML('beforeend', galeryItems)
 }
