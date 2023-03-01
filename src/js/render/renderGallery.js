@@ -1,6 +1,6 @@
 import { gallery } from "../elements";
 
-export function renderGalery(images) {
+export default function renderGalery(images) {
     const galeryItems = images.map(({
         webformatURL,
         largeImageURL,
