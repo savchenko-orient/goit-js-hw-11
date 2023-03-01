@@ -1,6 +1,6 @@
 const gallery = document.querySelector('.gallery');
 
-function renderGalery(images) {
+export function renderGalery(images) {
     const galeryItems = images.map(({
         webformatURL,
         largeImageURL,
@@ -38,5 +38,3 @@ function renderGalery(images) {
 
     gallery.insertAdjacentHTML('beforeend', galeryItems)
 }
-
-export default renderGalery;
