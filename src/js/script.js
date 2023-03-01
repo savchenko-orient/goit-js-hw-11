@@ -1,25 +1,25 @@
-import fetchImages from './fetchImages';
-import renderGalery from './renderGallery';
 import SimpleLightbox from "simplelightbox";
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import fetchImages from './api/fetchImages';
+import renderGalery from './render/renderGallery';
+import { formEl, loadMoreBtn, gallery } from './elements';
 import {
     noMatchImagesMessage,
     noSearchQueryMessage,
     howManyImagesFoundMessage,
     endOfSearchResultMessage
-} from './notifyMessages'
-
-const formEl = document.querySelector('#search-form');
-const loadMoreBtn = document.querySelector('.load-more-btn');
-const gallery = document.querySelector('.gallery');
-
+} from './notifyMessages';
 
 let lightbox = new SimpleLightbox('.gallery a');
 let searchQuery = '';
 let perPage = 30;
 let page = 1;
+let totalPages = 0;
 
-formEl.addEventListener('submit', async (e) => {
+formEl.addEventListener('submit', onSubmitHandler);
+loadMoreBtn.addEventListener('click', onClickHandler);
+
+async function onSubmitHandler(e) {
     e.preventDefault();
     gallery.innerHTML = '';
     page = 1;
@@ -30,51 +30,29 @@ formEl.addEventListener('submit', async (e) => {
         return
     }
 
-    try {
-        await fetchImages(searchQuery, page, perPage)
-            .then((data) => {
+    const data = await fetchImages(searchQuery, page, perPage);
 
-                if (data.totalHits === 0) {
-                    noMatchImagesMessage()
-                    return
-                }
-
-                howManyImagesFoundMessage(data.totalHits);
-                renderGalery(data.hits);
-                lightbox.refresh();
-
-                loadMoreBtn.classList.remove('is-hidden')
-            })
-    } catch (error) {
-        console.log(error);
+    if (data.totalHits === 0) {
+        noMatchImagesMessage()
+        return
     }
 
+    howManyImagesFoundMessage(data.totalHits);
+    renderGalery(data.hits);
+    lightbox.refresh();
+    loadMoreBtn.classList.remove('is-hidden')
     formEl.reset()
-});
-
-
-loadMoreBtn.addEventListener('click', () => {
+}
+async function onClickHandler() {
     page += 1;
+    const data = await fetchImages(searchQuery, page, perPage)
+    totalPages = Math.ceil(data.totalHits / perPage);
 
-    try {
-        fetchImages(searchQuery, page, perPage)
-            .then(({ data }) => {
-
-                renderGalery(data.hits);
-                lightbox.refresh();
-
-                loadMoreBtn.classList.remove('is-hidden');
-
-                const totalPages = Math.ceil(data.totalHits / perPage);
-
-                if (page > totalPages) {
-                    loadMoreBtn.classList.add('is-hidden');
-                    endOfSearchResultMessage()
-                }
-            })
-
-    } catch (error) {
-        console.log('error: ', error);
+    if (page > totalPages) {
+        loadMoreBtn.classList.add('is-hidden');
+        endOfSearchResultMessage();
     }
-})
 
+    renderGalery(data.hits);
+    lightbox.refresh();
+}

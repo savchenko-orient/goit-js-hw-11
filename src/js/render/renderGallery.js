@@ -1,4 +1,4 @@
-const gallery = document.querySelector('.gallery');
+import { gallery } from "../elements";
 
 export function renderGalery(images) {
     const galeryItems = images.map(({

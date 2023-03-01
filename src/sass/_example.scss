@@ -87,9 +87,11 @@ body {
 
   &__info {
     display: flex;
+    justify-content: space-between;
   }
 }
 .info-item {
+  display: block;
 }
 .load-more-btn {
   display: block;
