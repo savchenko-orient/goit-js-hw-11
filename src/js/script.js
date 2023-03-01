@@ -1,4 +1,4 @@
-import { fetchImages } from './fetchImages';
+import fetchImages from './fetchImages';
 import renderGalery from './renderGallery';
 import SimpleLightbox from "simplelightbox";
 import 'simplelightbox/dist/simple-lightbox.min.css';
@@ -29,11 +29,10 @@ formEl.addEventListener('submit', async (e) => {
         noSearchQueryMessage()
         return
     }
-    // lightbox.destroy();
 
     try {
         await fetchImages(searchQuery, page, perPage)
-            .then(({ data }) => {
+            .then((data) => {
 
                 if (data.totalHits === 0) {
                     noMatchImagesMessage()
@@ -43,7 +42,6 @@ formEl.addEventListener('submit', async (e) => {
                 howManyImagesFoundMessage(data.totalHits);
                 renderGalery(data.hits);
                 lightbox.refresh();
-                // lightbox = new SimpleLightbox('.gallery a');
 
                 loadMoreBtn.classList.remove('is-hidden')
             })
